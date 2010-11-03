@@ -1,0 +1,19 @@
+TARGET := kernel.bin
+CC := gcc
+NASM := nasm
+LD := ld
+
+all: $(TARGET)
+
+kernel.bin: kernel.o loader.o
+	$(LD) -T linker.ld -o $(TARGET) kernel.o loader.o 
+
+kernel.o: kernel.c video.h ascii.h
+	$(CC) -o kernel.o -c kernel.c -Wall -Wextra -Werror -nostdlib -nostartfiles -nodefaultlibs
+
+loader.o: loader.s
+	$(NASM) -f elf -o loader.o loader.s
+
+clean:
+	rm -rf $(TARGET)
+	rm -rf loader.o kernel.o
